@@ -1,4 +1,4 @@
-# gimmi'hacks
+# gimme'hacks
 
 ## a collections of hacks
 
