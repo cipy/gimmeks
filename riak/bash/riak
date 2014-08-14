@@ -1,0 +1,55 @@
+#
+# Bash completion for Riak
+#
+# to be saved as: /etc/bash_completion.d/riak
+
+_riak() 
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="start stop restart reboot ping console attach chkconfig escript version getpid"
+
+    if [[ ${cur} == * ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+}
+
+_riak-admin() 
+{
+    local cur prev opts base
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    opts="cluster test js-reload erl-reload wait-for-service ringready transfers force-remove down cluster-info member-status ring-status vnode-status aae-status diag status transfer-limit reformat-indexes topdowngrade-objects repair-2i"
+
+    case "${prev}" in
+	cluster)
+	    local running="join leave plan commit clear"
+	    COMPREPLY=( $(compgen -W "${running}" -- ${cur}) )
+            return 0
+            ;;
+        wait-for-service)
+	    local names="riak_kv"
+	    COMPREPLY=( $(compgen -W "${names}" -- ${cur}) )
+            return 0
+            ;;
+        down)
+	    local nodes=$(riak-admin member-status | grep valid | cut -d"'" -f2)
+	    COMPREPLY=( $(compgen -W "${nodes}" -- ${cur}) )
+            return 0
+            ;;
+        *)
+        ;;
+    esac
+
+   COMPREPLY=($(compgen -W "${opts}" -- ${cur}))  
+   return 0
+}
+
+complete -F _riak-admin riak-admin
+complete -F _riak riak

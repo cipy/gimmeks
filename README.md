@@ -7,4 +7,5 @@
 ##### ansible/playbooks - scripts on steroids, use `ansible-playbook` to run them
 
 ##### riak/
+##### riak/bash - Bash completion for Riak
 ##### riak/scripts - utility scripts for Riak
