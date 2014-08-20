@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Description: Simple logic to check if a KV is older than N days
+# Description: Simple logic to detect and remove KV older than N days
 #
 # Usage: $0 <older-than-days> <in-bucket> <key-to-test>
 #
@@ -47,5 +47,5 @@ now_time=$(date +%s)
 delta=$((now_time-old_time))
 
 # output the key older than $1 days
-[ $delta -gt $daysInSeconds ] && echo "$key"
+[ $delta -gt $daysInSeconds ] && curl -s -X DELETE "http://$riakIP:8098/buckets/$bucket/keys/$key"
 
