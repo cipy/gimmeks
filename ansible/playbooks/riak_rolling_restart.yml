@@ -8,7 +8,7 @@
 
   pre_tasks:
   - name: waiting (maybe) on transfers to complete
-    riak: wait_for_handoffs=0
+    riak: wait_for_handoffs=300 http_conn={{ inventory_hostname }}:8098
 
   tasks:
   - name: restarting riak
@@ -16,7 +16,7 @@
   - name: make sure riak is running
     service: name=riak state=running
   - name: waiting for riak_kv
-    riak: wait_for_service=kv
+    riak: wait_for_service=kv http_conn={{ inventory_hostname }}:8098
 
   post_tasks:
   - name: node restarted
