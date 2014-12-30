@@ -46,6 +46,6 @@ err_time=$(date -d "1 Jan 2010" "+%s")
 now_time=$(date +%s)
 delta=$((now_time-old_time))
 
-# output the key older than $1 days
+# delete the key older than $1 days
 [ $delta -gt $daysInSeconds ] && curl -s -X DELETE "http://$riakIP:8098/buckets/$bucket/keys/$key"
 
