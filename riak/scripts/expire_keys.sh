@@ -19,4 +19,4 @@ bucket="$2"
 #riakIP=$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
 
 # stream keys, strip JSON (don't mind the accidental "keys" tokens) and pipe them to 100 local ./del_key_older.sh processes
-curl -s "http://$riakIP:8098/buckets/$bucket/keys?keys=stream" | sed -E 's/","/\n/g' | sed -E 's/"\]\}\{"/\n/g' | sed -e 's/":\["/\n/g' | xargs -n 1 -P 100 ./del_key_older.sh $days $bucket
+curl -m 300 -s "http://$riakIP:8098/buckets/$bucket/keys?keys=stream" | sed -E -e 's/","/\n/g' -e 's/"\]\}\{"/\n/g' -e 's/":\["/\n/g' | xargs -n 1 -P 100 ./del_key_older.sh $days $bucket

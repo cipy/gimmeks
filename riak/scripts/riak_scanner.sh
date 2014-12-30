@@ -18,14 +18,14 @@ allBucketsFile=$(mktemp /tmp/riak-$riakIP-buckets-XXXX.gz)
 
 
 echo "Streaming all buckets from $riakIP:$riakPort"
-curl -s "http://$riakIP:$riakPort/buckets?buckets=stream" | sed -E -e 's/","/\n/g' -e 's/"\]\}\{"/\n/g' -e 's/":\["/\n/g' | grep -v buckets | pv -r | pigz --fast > $allBucketsFile
+curl -m 300 -s "http://$riakIP:$riakPort/buckets?buckets=stream" | sed -E -e 's/","/\n/g' -e 's/"\]\}\{"/\n/g' -e 's/":\["/\n/g' | grep -v buckets | pv -r | pigz --fast > $allBucketsFile
 
 for bucket in $(pigz -dc $allBucketsFile); do
 
 	echo "Streaming all keys for $bucket"
 
 	allKeysFile=$(mktemp /tmp/riak-$riakIP-$bucket-keys-XXXX.gz)
-	curl -s "http://$riakIP:$riakPort/buckets/$bucket/keys?keys=stream" | sed -E -e 's/","/\n/g' -e 's/"\]\}\{"/\n/g' -e 's/":\["/\n/g' | grep -v keys | pv -r | pigz --fast > $allKeysFile
+	curl -m 300 -s "http://$riakIP:$riakPort/buckets/$bucket/keys?keys=stream" | sed -E -e 's/","/\n/g' -e 's/"\]\}\{"/\n/g' -e 's/":\["/\n/g' | grep -v keys | pv -r | pigz --fast > $allKeysFile
 
 	echo "Found $(pigz -dc $allKeysFile | wc -l) keys in $bucket" 
 done
